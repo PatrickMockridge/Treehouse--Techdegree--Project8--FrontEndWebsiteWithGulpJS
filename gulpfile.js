@@ -1,15 +1,25 @@
 "use strict";
 
    var gulp = require('gulp'),
+//for concatenation
      concat = require('gulp-concat'),
+// for mushing and squashing
      uglify = require('gulp-uglify'),
+// for changing file names
      rename = require('gulp-rename'),
+// for compiling sass
        sass = require('gulp-sass'),
+// for creating source maps
        maps = require('gulp-sourcemaps'),
+// for deleting stuff
         del = require('del'),
+// for compressing images
    imagemin = require('gulp-imagemin'),
-runSequence = require('run-sequence');
-
+// for running things in sequence with promises
+runSequence = require('run-sequence'),
+// linting tool
+     eslint = require('gulp-eslint');;
+// concatentate written JS and pipe to js/global.js with source map
 gulp.task("concatScripts", function() {
     return gulp.src([
         'js/circle/autogrow.js',
@@ -21,26 +31,28 @@ gulp.task("concatScripts", function() {
     .pipe(maps.write('./'))
     .pipe(gulp.dest('js'));
 });
-
+// minify global.js and pipe to distribution
 gulp.task("scripts", ["concatScripts"], function() {
   return gulp.src("js/global.js")
+    .pipe(eslint())
+    .pipe(eslint.format())
     .pipe(uglify())
     .pipe(rename('all.min.js'))
     .pipe(gulp.dest('dist/scripts'));
 });
-
+// compress images and pipe to distribution
 gulp.task('images', () =>
     gulp.src('images/*')
         .pipe(imagemin())
         .pipe(gulp.dest('dist/content'))
 );
-
+// clean distribution folder
 gulp.task('clean', function() {
   del(['dist/**']);
   del();
 
 });
-
+// compile SASS
 gulp.task('styles', function() {
   return gulp.src(["sass/**.scss"])
       .pipe(maps.init())
@@ -53,8 +65,6 @@ gulp.task('styles', function() {
 gulp.task('watchSass', function() {
   gulp.watch('sass/**/*.sass', ['compileSass']);
 })
-
-
 
 gulp.task('build', function (callback) {
   runSequence(
