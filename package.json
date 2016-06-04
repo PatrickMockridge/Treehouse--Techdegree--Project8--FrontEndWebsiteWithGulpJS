@@ -1,29 +1,32 @@
 {
-  "name": "treehouse-gulp-course",
+  "name": "treehouse--techdegree--project8--frontendwebsitewithgulpjs",
   "version": "1.0.0",
-  "description": "Code for my Treehouse Techdegree Project 8 Gulp.js Submission!  June, 2016.",
-  "main": "index.js",
+  "description": "8th project for treehouse techdegree in full stack js",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "del": "^2.2.0",
+    "gulp-imagemin": "^3.0.1",
+    "gulp-concat": "^2.6.0",
+    "gulp": "^3.9.1",
+    "run-sequence": "^1.2.1"
+  },
+  "devDependencies": {
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.3"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hdngr/treehouse-gulp-course"
+    "url": "git+https://github.com/PatrickMockridge/Treehouse--Techdegree--Project8--FrontEndWebsiteWithGulpJS.git"
   },
-  "author": "",
+  "author": "patrickmockridge",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/hdngr/treehouse-gulp-course/issues"
+    "url": "https://github.com/PatrickMockridge/Treehouse--Techdegree--Project8--FrontEndWebsiteWithGulpJS/issues"
   },
-  "homepage": "https://github.com/hdngr/treehouse-gulp-course",
-  "devDependencies": {
-    "del": "^1.2.0",
-    "gulp": "^3.8.11",
-    "gulp-concat": "^2.5.2",
-    "gulp-imagemin": "^3.0.1",
-    "gulp-rename": "^1.2.2",
-    "gulp-sass": "^2.0.1",
-    "gulp-sourcemaps": "^1.5.2",
-    "gulp-uglify": "^1.2.0"
-  }
+  "homepage": "https://github.com/PatrickMockridge/Treehouse--Techdegree--Project8--FrontEndWebsiteWithGulpJS#readme"
 }

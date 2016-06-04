@@ -1,13 +1,14 @@
 "use strict";
 
-var gulp = require('gulp'),
-  concat = require('gulp-concat'),
-  uglify = require('gulp-uglify'),
-  rename = require('gulp-rename'),
-    sass = require('gulp-sass'),
-    maps = require('gulp-sourcemaps'),
-     del = require('del'),
-imagemin = require('gulp-imagemin');
+   var gulp = require('gulp'),
+     concat = require('gulp-concat'),
+     uglify = require('gulp-uglify'),
+     rename = require('gulp-rename'),
+       sass = require('gulp-sass'),
+       maps = require('gulp-sourcemaps'),
+        del = require('del'),
+   imagemin = require('gulp-imagemin'),
+runSequence = require('run-sequence');
 
 gulp.task("concatScripts", function() {
     return gulp.src([
@@ -28,32 +29,47 @@ gulp.task("scripts", ["concatScripts"], function() {
     .pipe(gulp.dest('dist/scripts'));
 });
 
-gulp.task('styles', function() {
-  return gulp.src("scss/application.scss")
-      .pipe(maps.init())
-      .pipe(sass())
-      .pipe(maps.write('./'))
-      .pipe(gulp.dest('css'));
-});
-
 gulp.task('images', () =>
     gulp.src('images/*')
         .pipe(imagemin())
         .pipe(gulp.dest('dist/content'))
 );
 
-gulp.task('watchSass', function() {
-  gulp.watch('scss/**/*.scss', ['compileSass']);
-})
-
 gulp.task('clean', function() {
-  del(['dist', 'css/application.css*', 'js/app*.js*']);
+  del(['dist/**']);
+  del();
+
 });
 
-gulp.task("build", ['minifyScripts', 'compileSass'], function() {
-  return gulp.src(["css/application.css", "js/app.min.js", 'index.html',
-                   "img/**", "fonts/**"], { base: './'})
-            .pipe(gulp.dest('dist'));
+gulp.task('styles', function() {
+  return gulp.src(["sass/**.scss"])
+      .pipe(maps.init())
+      .pipe(sass())
+      .pipe(maps.write('./'))
+      .pipe(gulp.dest('dist/styles'));
+});
+
+
+gulp.task('watchSass', function() {
+  gulp.watch('sass/**/*.sass', ['compileSass']);
+})
+
+
+
+gulp.task('build', function (callback) {
+  runSequence(
+    'clean',
+    'scripts',
+    'styles',
+    'images',
+    function (error) {
+      if (error) {
+        console.log(error.message);
+      } else {
+        console.log('BUILD FINISHED SUCCESSFULLY');
+      }
+      callback(error);
+    });
 });
 
 gulp.task("default", ["build"]);
