@@ -18,7 +18,9 @@
 // for running things in sequence with promises
 runSequence = require('run-sequence'),
 // linting tool
-     eslint = require('gulp-eslint');;
+     eslint = require('gulp-eslint'),
+// build a web server with gulp-connect
+      connect = require('gulp-connect');
 // concatentate written JS and pipe to js/global.js with source map
 gulp.task("concatScripts", function() {
     return gulp.src([
@@ -34,11 +36,14 @@ gulp.task("concatScripts", function() {
 // minify global.js and pipe to distribution
 gulp.task("scripts", ["concatScripts"], function() {
   return gulp.src("js/global.js")
+    .pipe(maps.init())
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(uglify())
     .pipe(rename('all.min.js'))
-    .pipe(gulp.dest('dist/scripts'));
+    .pipe(maps.write('./'))
+    .pipe(gulp.dest('dist/scripts'))
+    .pipe(connect.reload());
 });
 // compress images and pipe to distribution
 gulp.task('images', () =>
@@ -48,9 +53,9 @@ gulp.task('images', () =>
 );
 // clean distribution folder
 gulp.task('clean', function() {
-  del(['dist/**']);
-  del();
-
+  del(['dist/content/**']);
+  del(['dist/scripts/**']);
+  del(['dist/styles/**']);
 });
 // compile SASS
 gulp.task('styles', function() {
@@ -58,13 +63,15 @@ gulp.task('styles', function() {
       .pipe(maps.init())
       .pipe(sass())
       .pipe(maps.write('./'))
-      .pipe(gulp.dest('dist/styles'));
+      .pipe(gulp.dest('dist/styles'))
+      .pipe(connect.reload());
 });
 
 
-gulp.task('watchSass', function() {
-  gulp.watch('sass/**/*.sass', ['compileSass']);
-})
+gulp.task('watch', function () {
+  gulp.watch(['sass/**/*.scss', 'sass/**/*.sass'], ['styles']);
+  gulp.watch(['js/**/*.js'], ['scripts']);
+});
 
 gulp.task('build', function (callback) {
   runSequence(
@@ -81,5 +88,13 @@ gulp.task('build', function (callback) {
       callback(error);
     });
 });
+
+gulp.task('webserver', function() {
+  connect.server({
+    livereload: true
+  });
+});
+
+gulp.task('serve', ['webserver', 'watch']);
 
 gulp.task("default", ["build"]);
