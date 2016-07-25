@@ -39,6 +39,7 @@ gulp.task("scripts", ["concatScripts"], function() {
     .pipe(maps.init())
     .pipe(eslint())
     .pipe(eslint.format())
+    .pipe(eslint.failAfterError())
     .pipe(uglify())
     .pipe(rename('all.min.js'))
     .pipe(maps.write('./'))
